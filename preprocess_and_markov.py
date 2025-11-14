@@ -144,7 +144,6 @@ def main(conllu_path, n_examples=10, use_lemma=True):
 # RUN
 # ============================
 if __name__ == "__main__":
-    # ضع هنا المسار الصحيح بعد فك الضغط من zip
     conllu_file = r"C:\Users\Mohme\Downloads\UD_English-EWT-master\en_ewt-ud-train.conllu"
 
     if not os.path.exists(conllu_file):
