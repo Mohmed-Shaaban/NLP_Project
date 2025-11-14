@@ -1,241 +1,177 @@
-📘 NLP Preprocessing & N-Gram Language Model Project
-Course Evaluation – Text Normalization & Sentence Probability Calculation
-⭐ Project Overview
+# **NLP Project – Text Preprocessing & N-Gram Sentence Probability**
 
-This project demonstrates essential NLP preprocessing techniques and applies N-gram language modeling (Markov assumption) to compute the probability of sentences from a dataset in CONLL-U format.
+## **1. Project Overview**
+This project applies standard NLP preprocessing steps to a linguistic dataset and then computes sentence probabilities using an **N-Gram (Bigram) Language Model** with the **Markov assumption**.
 
-The workflow includes:
+The project satisfies the requirements of the first evaluation:
 
-Dataset selection (UD English EWT)
+1. **Data Selection & Preprocessing**
+2. **N-Gram Sentence Probability Calculation**
 
-Text preprocessing
+---
 
-Segmentation
+## **2. Dataset Description (UD_English-EWT)**
 
-Tokenization
+The dataset used is **Universal Dependencies English Web Treebank (EWT)** in **CONLL-U format**.
 
-Lowercasing
+### **Why I Chose This Dataset**
+- A standard benchmark used in NLP research.
+- Already segmented into **sentences**, ready for processing.
+- Contains **lemmas**, POS tags, morphological features → ideal for preprocessing.
+- Works perfectly with Python libraries like `conllu`.
+- High quality, well-structured, and widely used.
 
-Stopword removal
+---
 
-Removing numbers & punctuation
+## **3. Understanding the CONLL-U Format**
 
-Lemmatization
+Each sentence is represented by a block of rows.  
+Each row has 10 columns:
 
-Building N-gram counts
+| Column | Meaning | Example |
+|--------|---------|---------|
+| **ID** | Token index | 1 |
+| **FORM** | Word as it appears in text | killed |
+| **LEMMA** | Base form | kill |
+| **UPOS** | Universal POS tag | VERB |
+| **XPOS** | Language-specific POS | VBD |
+| **FEATS** | Morphological features | Tense=Past |
+| **HEAD** | Head token index | 7 |
+| **DEPREL** | Dependency relation | obj |
+| **DEPS** | Enhanced dependencies | _ |
+| **MISC** | Other info | SpaceAfter=No |
 
-Computing sentence probabilities
+This structure makes it easy to extract (FORM, LEMMA) pairs.
 
-Displaying clean, well-formatted output
+---
 
-This project is designed to satisfy the first evaluation requirements for the NLP course.
+## **4. Preprocessing Steps**
 
-📂 Dataset Used: UD English EWT (CONLLU format)
+### ✔ Lower casing  
+Convert all tokens to lowercase.
 
-We use a well-known linguistic dataset: Universal Dependencies – English Web Treebank (EWT).
+### ✔ Lemmatization  
+Use the `lemma` column from the dataset.
 
-Why choose this dataset?
+### ✔ Remove punctuation  
+Using regex to detect punctuation-only tokens.
 
-✔ Free and publicly available
-✔ Clean, annotated, linguistically valid
-✔ Contains high-quality segmentation, POS tags, lemmas, dependencies
-✔ Perfect for NLP preprocessing tasks
-✔ Lemmas are included → helpful for normalization
+### ✔ Remove numbers  
+Remove tokens that are integers or floats.
 
-Structure of Each Row (CONLL-U)
-Column	Meaning
-ID	Token index inside the sentence
-FORM	Original word in the text
-LEMMA	Normalized dictionary form
-UPOS	Universal part of speech
-XPOS	Language-specific part of speech
-FEATS	Morphological features (Gender, Case, Number...)
-HEAD	Governor (dependency parent)
-DEPREL	Dependency relation type
-DEPS	Enhanced dependencies
-MISC	Extra metadata (SpaceAfter, alignment…)
-⚙️ Installation & Setup
-1️⃣ Install required libraries
-pip install nltk tqdm conllu
+### ✔ Remove stopwords  
+Using:  
+```python
+from nltk.corpus import stopwords
+```
 
-2️⃣ Download NLTK resources
-import nltk
-nltk.download("stopwords")
+### ✔ Remove empty tokens  
+Ensure only clean tokens remain.
 
-🧹 Preprocessing Steps (Explained)
+### After preprocessing example  
+**Before:**  
+`American forces killed Shaikh Abdullah al-Ani, near the Syrian border.`
 
-Your code performs:
+**After:**  
+`american force kill shaikh abdullah ani syrian border`
 
-✓ 1. Token extraction
+---
 
-Reads each sentence from the CONLLU file.
+## **5. N-Gram Language Model**
 
-✓ 2. Lowercasing
+We compute probabilities using **Bigram Model** with **Add-1 Smoothing**.
 
-All text converted to lowercase.
+### **Formula**
 
-✓ 3. Lemmatization
+\[
+P(w_1, w_2, ..., w_n) = P(w_1) \times \prod_{i=2}^{n} P(w_i | w_{i-1})
+\]
 
-Using the LEMMA column (if available).
+Bigram probability:
 
-✓ 4. Removing:
+\[
+P(w_i | w_{i-1}) = \frac{Count(w_{i-1}, w_i) + 1}{Count(w_{i-1}) + V}
+\]
 
-Stopwords
+Where:  
+- `V` = vocabulary size  
+- Add-1 smoothing avoids zero probabilities
 
-Numbers
+---
 
-Punctuation
+## **6. Output Format (Before & After Preprocessing)**
 
-Empty tokens
+The script prints each sentence like this:
 
-Non-alphabetic symbols
-
-✓ 5. Return clean, normalized tokens
-🧮 N-Gram Model (Markov Assumption)
-
-Given a sentence:
-I love natural language processing
-
-The 2-gram probability is:
-
-𝑃
-(
-𝑆
-)
-=
-𝑃
-(
-𝐼
-)
-×
-𝑃
-(
-𝑙
-𝑜
-𝑣
-𝑒
-∣
-𝐼
-)
-×
-𝑃
-(
-𝑛
-𝑎
-𝑡
-𝑢
-𝑟
-𝑎
-𝑙
-∣
-𝑙
-𝑜
-𝑣
-𝑒
-)
-×
-𝑃
-(
-𝑙
-𝑎
-𝑛
-𝑔
-𝑢
-𝑎
-𝑔
-𝑒
-∣
-𝑛
-𝑎
-𝑡
-𝑢
-𝑟
-𝑎
-𝑙
-)
-×
-𝑃
-(
-𝑝
-𝑟
-𝑜
-𝑐
-𝑒
-𝑠
-𝑠
-𝑖
-𝑛
-𝑔
-∣
-𝑙
-𝑎
-𝑛
-𝑔
-𝑢
-𝑎
-𝑔
-𝑒
-)
-P(S)=P(I)×P(love∣I)×P(natural∣love)×P(language∣natural)×P(processing∣language)
-
-We compute:
-
-N-gram counts
-
-Conditional probabilities
-
-Final probability per sentence
-
-▶️ Running the Project
-
-Modify the file path:
-
-conllu_path = "path/to/dataset.conllu"
-
-
-Then run:
-
-python main.py
-
-
-The output will show:
-
-🟦 Original Sentence
-🟩 After Preprocessing
-🟧 N-gram Probability
-📤 Output Example (Styled)
-====================================
+```
+=====================================================
 Sentence #1 (Original):
-I really love learning NLP and I enjoy text processing.
+American forces killed Shaikh Abdullah al-Ani, near the Syrian border.
 
-Preprocessed:
-love learn nlp enjoy text processing
+After Preprocessing:
+american force kill shaikh abdullah ani syrian border
 
-2-Gram Probability:
-1.2357e-12
-====================================
+Bigram Probability:
+2.481e-07
+=====================================================
+```
 
-📌 Project Files
-File	Description
-main.py	Contains the full preprocessing + N-gram probability calculation
-README.md	Project documentation
-dataset.conllu	The dataset used
-🧑‍🏫 Why This Project Is Important (Interview / Exam Points)
+This format is used for all 10 sentences.
 
-Shows understanding of text normalization pipelines
+---
 
-Demonstrates applying probability using N-gram models
+## **7. Project Structure**
 
-Works with real linguistic datasets (CONLLU)
+```
+📁 NLP_Project
+│
+├── preprocess_and_markov.py   # Main code
+├── en_ewt-ud-train.conllu     # Dataset
+└── README.md                  # Documentation
+```
 
-Uses lemmatization, which is more advanced than stemming
+---
 
-Shows ability to produce clean, structured output
+## **8. How to Run**
 
-Demonstrates practical NLP skills (preprocessing + modeling)
+### Install dependencies:
+```bash
+pip install nltk conllu tqdm
+```
 
-🙌 Author
+### Run the script:
+```bash
+python preprocess_and_markov.py
+```
 
-Mohamed — NLP Course Project
-Faculty of Computers & Information
-Mansoura University
+---
+
+## **9. Oral Exam Answers (Important)**
+
+### ❓ Why did you choose this dataset?
+Because it is a high-quality, linguistically annotated dataset widely used in NLP research and ideal for applying preprocessing and language modeling.
+
+### ❓ Why lemmatization instead of stemming?
+Lemmatization keeps meaningful base forms (kill, run, eat), unlike stemming which may distort words.
+
+### ❓ What is the Markov assumption?
+Each word depends only on the previous word (bigram).
+
+### ❓ Why remove stopwords?
+They add noise and do not contribute to sentence meaning.
+
+---
+
+## **10. Conclusion**
+
+This project demonstrates:
+
+- Full NLP preprocessing pipeline  
+- Clean handling of CONLL-U datasets  
+- Construction of **unigram & bigram** models  
+- Probability calculation for **10 sentences**  
+- Clean formatted output  
+
+The project meets all required evaluation criteria.
+
+---
