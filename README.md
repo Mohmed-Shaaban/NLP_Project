@@ -83,30 +83,28 @@ We compute probabilities using **Bigram Model** with **Add-1 Smoothing**.
 
 ## **Mathematical Formulas**
 
-### **Sentence Probability Using Bigram Model**
+### **Sentence Probability (Bigram Model)**
 
-The probability of a sentence:
-
-\[
+$$
 P(w_1, w_2, \ldots, w_n)
 = P(w_1) \times \prod_{i=2}^{n} P(w_i \mid w_{i-1})
-\]
+$$
 
 ---
 
-### **Bigram Conditional Probability (with Add-1 Smoothing)**
+### **Bigram Conditional Probability (Add-1 Smoothing)**
 
-\[
+$$
 P(w_i \mid w_{i-1})
-= \frac{\text{Count}(w_{i-1}, w_i) + 1}{\text{Count}(w_{i-1}) + V}
-\]
+= \frac{\text{Count}(w_{i-1},\, w_i) + 1}{\text{Count}(w_{i-1}) + V}
+$$
 
 Where:
 
-- \( \text{Count}(w_{i-1}, w_i) \) = bigram frequency  
-- \( \text{Count}(w_{i-1}) \) = unigram frequency  
-- \( V \) = vocabulary size  
-- Add-1 (Laplace) smoothing avoids zero probability  
+- **Count(wᵢ₋₁, wᵢ)** = frequency of the bigram  
+- **Count(wᵢ₋₁)** = frequency of the previous word  
+- **V** = vocabulary size  
+- Add-1 smoothing prevents zero probabilities  
 
 
 
