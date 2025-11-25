@@ -1,4 +1,5 @@
-# **NLP Project – Text Preprocessing & N-Gram Sentence Probability**
+# NLP Project 
+# **Text Preprocessing & N-Gram Sentence Probability**
 
 ## **1. Project Overview**
 This project applies standard NLP preprocessing steps to a linguistic dataset and then computes sentence probabilities using an **N-Gram (Bigram) Language Model** with the **Markov assumption**.
