@@ -132,30 +132,116 @@ This format is used for all 10 sentences.
 ## **7. Project Structure**
 
 ```
-📁 NLP_Project
+NLP_PROJECT/
 │
-├── preprocess_and_markov.py   # Main code
-├── en_ewt-ud-train.conllu     # Dataset
-└── README.md                  # Documentation
+├── .vscode/                  
+│
+├── data/                     
+│   ├── features/             # Extracted features from dataset
+│   │   ├── features_binary.csv    # Binary features per token
+│   │   ├── features_count.csv     # Count-based features
+│   │   └── features_tfidf.csv     # TF-IDF weighted features
+│   │
+│   ├── processed/            # Processed datasets
+│   │   └── sentence_probs.csv      
+│   │
+│   └── raw/                  # Raw dataset files
+│       └── en_ewt-ud-train.conllu  
+│
+├── src/                      
+│   ├── features/             # Feature extraction scripts
+│   │   └── feature_extraction.py   # Extract binary, count, and TF-IDF features
+│   │
+│   └── preprocessing/        # Preprocessing scripts
+│       └── preprocess_and_markov.py  # Text cleaning, tokenization, and N-Gram sentence probability
+│
+├── venv/                     # Virtual environment
+│
+└── README.md                 
+
 ```
 
 ---
 
-## **8. How to Run**
+# Feature Extraction
+
+After preprocessing, the **feature extraction module** converts cleaned text into numerical vectors suitable for machine learning and NLP tasks. Algorithms cannot operate on raw text, so structured feature matrices are essential.
+
+## Objectives
+- Generate multiple vectorized representations of the text
+- Compare how different feature types capture linguistic characteristics
+- Save feature matrices in reusable CSV files
+- Prepare data for modeling, clustering, or statistical analysis
+
+## Extracted Feature Types
+
+### 1. Count Vectorization
+- Converts each document into word frequency counts  
+- Simple and interpretable; ideal as a baseline  
+- **Output:** `data/features/features_count.csv`
+
+### 2. Binary Vectorization
+- Marks each token as `1` (present) or `0` (absent)  
+- Ignores frequency; focuses on vocabulary usage  
+- **Output:** `data/features/features_binary.csv`
+
+### 3. TF-IDF (Term Frequency – Inverse Document Frequency)
+- Weighs terms by importance across the dataset  
+- Highlights informative words and down-weights common words  
+- **Output:** `data/features/features_tfidf.csv`
+
+## Implementation Details
+**Script:** `src/features/feature_extraction.py`
+
+**Steps:**
+1. Load preprocessed text (cleaned tokens)  
+2. Initialize vectorizers using scikit-learn:  
+   - `CountVectorizer`  
+   - `TfidfVectorizer`  
+   - Binary variant of `CountVectorizer`  
+3. Generate feature matrices: Count, Binary, TF-IDF  
+4. Save matrices as CSV in `data/features/`
+
+> All matrices share the same vocabulary to ensure consistency.
+
+## Why These Features?
+
+| Feature Type | Strength                  | Best Use Case              |
+|--------------|--------------------------|----------------------------|
+| Count        | Simple & interpretable   | Baseline models           |
+| Binary       | Removes frequency bias   | When word presence matters |
+| TF-IDF       | Highlights important words | Most ML & NLP tasks      |
+
+> Using multiple feature types allows flexibility for experimentation with different models.
+
+## Future Extensions
+- N-gram features (bigrams, trigrams)  
+- Word embeddings (Word2Vec, GloVe)  
+- Sentence embeddings (BERT, SBERT)  
+- POS-tag or dependency-based features
+---
+
+---
+
+## **9. How to Run**
 
 ### Install dependencies:
 ```bash
 pip install nltk conllu tqdm
 ```
 
-### Run the script:
+### 9.1 Run preprocessing and Markov probability script:
 ```bash
 python preprocess_and_markov.py
+```
+### 9.2 Run feature extraction:
+```bash
+python feature_extraction.py
 ```
 
 ---
 
-## **9. (Important)**
+## **10. (Important)**
 
 ### ❓ Why did you choose this dataset?
 Because it is a high-quality, linguistically annotated dataset widely used in NLP research and ideal for applying preprocessing and language modeling.
@@ -169,6 +255,16 @@ Each word depends only on the previous word (bigram).
 ### ❓ Why remove stopwords?
 They add noise and do not contribute to sentence meaning.
 
+### ❓ What is feature extraction in this project?
+
+Feature extraction converts tokens into structured representations for machine learning:
+
+Binary features: Whether a token has a certain property (e.g., POS tag, capitalization).
+
+Count-based features: How often a token or property occurs.
+
+TF-IDF features: How important a token is in the dataset relative to other tokens.
+
 ---
 
 ## **10. Conclusion**
@@ -179,7 +275,8 @@ This project demonstrates:
 - Clean handling of CONLL-U datasets  
 - Construction of **unigram & bigram** models  
 - Probability calculation for **10 sentences**  
-- Clean formatted output  
+- Extraction of binary, count-based, and TF-IDF features for each token
+-  Clean formatted output
 
 The project meets all required evaluation criteria.
 
